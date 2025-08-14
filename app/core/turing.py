@@ -3,7 +3,7 @@ import sys
 import logging
 import random
 
-from typing import List
+from typing import List, Any
 
 from app.interfaces.cli.console import Console
 from app.core.options import Option, OptionRegistry
@@ -76,10 +76,11 @@ class Turing:
 
 
     #################################################################################
-    # PUBLIC METHODS                                                                #
+    # MISC PUBLIC METHODS                                                           #
     #################################################################################
     def get_tagline(self) -> str:
         """Randomly returns a tagline. This is for display purposes."""
+        #TODO: consider storing these in a datastore to clean up the code
         taglines = list(set([
             "AI doesn’t dream of electric sheep — it dreams of cleaner datasets.",
             "If it predicts the future, it’s called “foresight.” If it’s wrong, it’s “hallucination.”",
@@ -123,6 +124,7 @@ class Turing:
         if count <= 0:
             raise ValueError(f"Count expected to be a positive integer, got '{count}'")
         init_lines: List[str] = list(set([
+            #TODO: consider storing these in a datastore to clean up the code
             "Spinning up the sarcasm engine… done.",
             "Loading connectors: ollama (because you insisted).",
             "Model: llama3 — smarter than your average alpaca.",
@@ -165,3 +167,19 @@ class Turing:
     def toggle_debug(self) -> None:
         """Toggles the debug state of the application."""
         self._debug = not self._debug
+
+    
+    #################################################################################
+    # PUBLIC OPTIONS METHODS                                                        #
+    #################################################################################
+    def get_option(self, name: str) -> Option:
+        pass
+
+    def get_options(self) -> List[Option]:
+        pass
+
+    def set_option(self, name: str, value: Any) -> None:
+        pass
+
+    def unset_option(self, name: str) -> None:
+        pass

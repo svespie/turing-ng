@@ -3,10 +3,12 @@ import shlex
 
 from cmd2 import Cmd
 from cmd2.plugin import PostcommandData
-from typing import List
+from typing import List, Dict, Any
 
 from app.core.turing import Turing
+from app.core.options import Option
 from app.interfaces.cli.console import Console
+from app.core.version import get_version
 
 class TuringShell(cmd2.Cmd):
     """"""
@@ -123,6 +125,29 @@ class TuringShell(cmd2.Cmd):
         self._set_prompt()
         return data
     
+    def _display_options(self, options: List[Option]) -> None:
+        """Displays options in a uniform way."""
+        if not options:
+            Console.Write.warn("Options list empty.")
+            return
+        rows = []
+        for opt in options:
+            rows.append(opt.name, "" if opt.value is None else str(opt.value), opt.required, opt.description)
+        name_w = max(len(name) for name, _, _, _ in rows)
+        value_w = max(len(value) for _, value, _, _ in rows)
+        req_w = max(len(required) for _, _, required, _ in rows)
+        header = f"{'NAME'.ljust(name_w)} | {'VALUE'.ljust(value_w)} | {'REQUIRED'.ljust(req_w)} | DESCRIPTION"
+        # TODO: be mindful of magic strings
+        separater = "─" * len(header)
+        self.print(header)
+        self.print(separater)
+        for name, val, required, desc in rows:
+            if required:
+                required_str = "yes"
+            else:
+                required_str = "no"
+            self.print(f"{name.ljust(name_w)}   {val.ljust(value_w)}   {required_str.ljust(req_w)}   {desc}")
+
     
     #################################################################################
     # PUBLIC METHODS                                                                #
@@ -148,13 +173,14 @@ class TuringShell(cmd2.Cmd):
         """Toggles debug state."""
         self._turing.toggle_debug()
 
+    def do_version(self, _) -> None:
+        """Displays the application version."""
+        print(get_version())
 
-    #debug             Display information useful for debugging
+
     #get               Gets the value of a context-specific variable
     #getg              Gets the value of a global variable
     #set               Sets a context-specific variable to a value
     #setg              Sets a global variable to a value
-    #threads           View and manipulate background threads
     #unset             Unsets one or more context-specific variables
     #unsetg            Unsets one or more global variables
-    #version           Show the framework and console library version numbers

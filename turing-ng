@@ -18,7 +18,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.version:
         version = get_version()
-        Console.raw(version)
+        print(version)
         sys.exit(0)
     debug = args.debug
     try:
