@@ -2,25 +2,14 @@
 
 import argparse
 import sys
+import traceback
 
 sys.dont_write_bytecode = True
 
-from app.core.console import Console, Colors
-from app.core.turing import TuringCore
-
-def get_version() -> str:
-    """
-    Gets the current version of the application.
-    
-    Returns:
-        str:    The current version of the application.
-    """
-    try:
-        with open("VERSION", "r") as f:
-            return f.read().strip()
-    except Exception as ex:
-        Console.warn(f"There was a problem opening the version file: {Colors.RED}{ex}{Colors.NATIVE}.")
-        return "unknown"
+from app.interfaces.cli.console import Console
+from app.core.version import get_version
+from app.core.turing import Turing
+from app.interfaces.cli.shell import TuringShell
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
@@ -33,8 +22,10 @@ if __name__ == "__main__":
         sys.exit(0)
     debug = args.debug
     try:
-        app: TuringCore = TuringCore(debug=debug)
-        app.start()
-    except Exception as ex:
-        Console.err(f"There was an unknown problem: {ex}")
-        Console.trace()
+        turing: Turing = Turing(debug=debug)
+        shell: TuringShell = TuringShell(turing)
+        shell.start()
+    except Exception as e:
+        Console.Write.error(f"An unknown error occurred: {e}")
+        if args.debug:
+            Console.Write.exception(traceback.format_exc())
