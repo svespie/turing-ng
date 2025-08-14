@@ -60,7 +60,7 @@ class Turing:
         registry.register(Option(name="proxy", description="proxy server (address:port)", required=False, default="128.0.0.1:8080"))
         registry.register(Option(name="threads", description="number of threads, where applicable", required=True, default=10))
         registry.register(Option(name="timeout", description="socket timeout, in seconds", required=True, default=10))
-        registry.register(Option(name="user-agent", description="user agent string", required=True, default="bombe-ng"))
+        registry.register(Option(name="user-agent", description="user agent string", required=True, default="turing-ng"))
 
 
     #################################################################################
